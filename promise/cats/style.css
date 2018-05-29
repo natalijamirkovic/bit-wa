@@ -1,0 +1,19 @@
+img {
+    width: 300px;
+    margin-right: 30px;
+}
+
+img:last-child {
+    margin-right: 0;
+}
+
+h1 {
+    text-align: center;
+    color: tomato;
+    font-size: 200px;
+}
+
+.imgHolder {
+    width: 960px;
+    margin: 0 auto;
+}

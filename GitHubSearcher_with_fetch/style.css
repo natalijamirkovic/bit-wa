@@ -1,0 +1,12 @@
+.alert {
+    display: none;
+}
+
+.header {
+    margin-bottom: 100px;
+}
+
+.card {
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
