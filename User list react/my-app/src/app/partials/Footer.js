@@ -6,7 +6,7 @@ const Footer = (props) => {
         <footer className="page-footer">
             <div className="footer-copyright">
                 <div className="container">
-                    © 2018 Copyright Bit
+                    © 2018 Copyright Bit Natalija i Kristina
                 </div>
             </div>
         </footer>
