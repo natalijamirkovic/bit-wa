@@ -3,7 +3,7 @@ class User {
         this.name = name;
         this.email = email;
         this.picture = picture;
-        this.dob = new Date(dob);
+        this.dob = dob;
     }
 
   
@@ -15,6 +15,11 @@ class User {
         const transformedEmail = myEmail.join("@");
     
         return transformedEmail;
+    }
+    getDate(){ 
+        const date = new Date (this.dob).toDateString().split(" ");
+        const newDate = `${date[1]} ${date[2]} ${date[3].slice(2)}`
+        return newDate;
     }
 }
 

@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./partials/Header";
 import Footer from "./partials/Footer";
 import { fetchUsers } from '../services/userService';
-
+import { UserList } from "./users/UserList"
 
 // class App extends Component {
 //   render() {
@@ -30,7 +30,7 @@ const App = (props) => {
   return (
     <React.Fragment>
       <Header />
-
+      <UserList />
       <Footer />
     </React.Fragment>
   )
