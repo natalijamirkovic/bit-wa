@@ -1,48 +1,61 @@
-import { loadData, fetchSingleShow } from "./data.js";
-import { showData, showSingleItem } from "./ui.js";
+const mainModule = ((ui, data) => {
+    const initHomepage = () => {
+
+        data.fetchShows((showData) => {
+            ui.renderShows(showData);
+        },
+
+            function (error) {
+                ui.renderError(error);
+            });
+
+        $(document).on("click", "a", function (event) {
+            event.preventDefault();
+            let id = this.getAttribute("data-id");
+            localStorage.setItem("id", id);
+            location.assign("show-info.html");
+        });
+
+        $(".form-control").on("keyup", function (event) {
+            let input = this.value;
+            data.searchSuggestions(input, function (data) {
+                ui.renderDropdown(data);
+            });
+        });
 
 
-export const initHomepage = () => {
-    setupEventListener();
 
-    const storageShows = localStorage.getItem("top50shows");
-    if (storageShows) {
-        showData(JSON.parse(storageShows))
-    } else {
-        loadData()
-            .then((reformedList50) => {
-                showData(reformedList50);
-            })
     }
 
-}
+    const initSinglePage = () => {
+        const idInLocalStorage = localStorage.getItem("id");
 
-const setupEventListener = () => {
-    $(document).on('click', ".show-card", function () {
-        // get id
-        let idValue = $(this).attr("data-id");
-        // set to ls
-        localStorage.setItem("id", idValue);
-        // redirect to single page 
-        location.href = "showInfoPage.html";
-    });
-}
+        data.fetchSingleShow(idInLocalStorage, function (showData) {
+            ui.renderSingleShow(showData);
 
-let id = localStorage.getItem("id");
+        }, function (error) {
+            ui.renderError(error);
+        });
 
-console.log(id);
+        $(document).on("click","a", function(event){
+            event.preventDefault()
+            const id = this.getAttribute("data-id");
+            localStorage.setItem("id", id);
+            location.assign("show-info.html");
+        });
+
+        $(".form-control").on("keyup", function(event){
+            let input = this.value;
+            data.searchSuggestions(input, function(data){
+                ui.renderDropdown(data)
+            });
+        });
+    }
 
 
-export const initSingleShow = () => {
-    console.log('second page');
-    fetchSingleShow(id)
-        .then(showSingleItem);
-}
 
-    // $("#search-field").on("keyup", function(event){
-    //     let input = this.value;
-    //     data.searchShow(input, function(str){
-    //        ui.dropdownDisplay(str);
-    //     });
-    // });
-
+    return {
+        initHomepage,
+        initSinglePage
+    }
+})(uiModule, dataModule);

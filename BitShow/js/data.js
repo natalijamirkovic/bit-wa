@@ -1,109 +1,126 @@
-class Show {
-    constructor(id, name, image) {
-        this.name = name;
-        this.image = image.medium;
-        this.id = id;
-
-    }
-}
-class singleShow extends Show {
-    constructor(id, name, image, summary, seasons, cast) {
-        super(id, name, image)
-        this.original = image.original;
-        this.summary = summary;
-        this.seasons = seasons;
-        this.cast = cast;
+const dataModule = (() => {
+    class Show {
+        constructor(id, name, image) {
+            this.id = id;
+            this.name = name;
+            this.image = image;
+        }
     }
 
-}
-class Season {
-    constructor(beginDate, endDate) {
-        this.beginDate = beginDate;
-        this.endDate = endDate;
+
+    class SingleShow extends Show {
+        constructor(id, name, image, castList, seasonsList, summary) {
+            super(id, name, image)
+            this.castList = castList;
+            this.seasonsList = seasonsList;
+            this.summary = summary;
+
+        }
     }
-}
 
-export const loadData = () => {
 
-    return fetch("http://api.tvmaze.com/shows")
-        .then((response) => {
-          
-            return response.json()
-        })
-        .then((listShows) => {
-            listShows.sort(function (curr, next) {
-                const a = curr.rating.average;
-                const b = next.rating.average;
-                return b - a;
-            });
-            return listShows;
-        })
-        .then((sortedShows) => {
-            const reformedList50 = sortedShows
-                .slice(0, 50)
-                .map(singleShowObj => {
-                    const show = new Show(singleShowObj.id, singleShowObj.name, singleShowObj.image);
-                    return show;
-                })
-               
-                localStorage.setItem("top50shows", JSON.stringify(reformedList50));
+    const fetchShows = (successHandler, errorHandler) => {
+        const request = $.ajax({
+            url: `http://api.tvmaze.com/shows`,
+            method: "GET"
+        });
 
-            return reformedList50;
-        })
+        request.done((response) => {
+            const showList = []
 
-};
-
-export const fetchSingleShow = (id) => {
-    return fetch(`http://api.tvmaze.com/shows/${id}?embed[]=seasons&embed[]=cast`)
-        .then((response) => {
-            return response.json()
-        })
-        .then((show) => {
-            let id = show.id;
-            let numOfSeasons = show._embedded.seasons.length;
-            let seasons = show._embedded.seasons;
-            let cast = show._embedded.cast;
-            let castList = [];
-            let reformSeason = seasons
-                .map((singleObj) => {
-                    const mySeason = new Season(singleObj.premiereDate, singleObj.endDate);
-                    return mySeason;
-                })
-            console.log(reformSeason);
-            for (let i = 0; i < 10; i++) {
-                castList.push(cast[i].person.name);
+            for (let i = 0; i < 50; i++) {
+                const id = response[i].id;
+                const name = response[i].name;
+                const image = response[i].image.medium;
+                const show = new Show(id, name, image);
+                showList.push(show);
             }
-            const myShow = new singleShow(id, show.name, show.image, show.summary, reformSeason, castList);
-            console.log(myShow);
-    
-            return myShow;
+
+            successHandler(showList);
+        });
+
+        request.fail((jqXHR, textStatus) => {
+            errorHandler(textStatus)
+        });
+    }
+
+    const fetchSingleShow = (id, successHandler, errorHandler) => {
+        const request = $.ajax({
+            url: `http://api.tvmaze.com/shows/${id}?embed[]=seasons&embed[]=cast`,
+            method: "GET"
+        });
+        request.done((response) => {
+            const id = response.id;
+            const name = response.name;
+            const image = response.image.original;
+            const summary = response.summary;
+            const castList = [];
+            const cast = response._embedded.cast;
+
+            for (let i = 0; i < cast.length; i++) {
+                castList.push(cast[i].person.name)
+            }
+
+            const seasonsList = [];
+            const seasons = response._embedded.seasons;
+
+            for (let i = 0; i < seasons.length; i++) {
+                const premiereDate = seasons[i].premiereDate;
+                const endDate = seasons[i].endDate;
+                const dateObject = {
+                    premiereDate,
+                    endDate
+                }
+                seasonsList.push(dateObject)
+            }
+
+            const singleShow = new SingleShow(id, name, image, castList, seasonsList, summary);
+
+            successHandler(singleShow);
         })
+        request.fail((jqXHR, textStatus) => {
+            errorHandler(textStatus)
+        });
+    }
 
-}
-    // const searchShow = function (input, doneHandler) {
-    //     $.ajax({
-    //         url: `http://api.tvmaze.com/search/shows?q=${input}`,
-    //         method: "GET"
-    //     }).done(function (searched) {
-    //         shows = [];
-    //         if (searched.length <= 10) {
-    //             for (let i = 0; i < searched.length; i++) {
-    //                 const searchedName = searched[i].show.name;
-    //                 const searchedId = searched[i].show.id;
-    //                 const searchedImg = "";
-    //                 let show = new Show(showId, showName, showImg);
-    //                 shows.push(show);
-    //             }
-    //         } else {
-    //             for (let i = 0; i < 10; i++) {
-    //                 const searchedName = searched[i].show.name;
-    //                 const searchedId = searched[i].show.id;
-    //                 const searchedImg = "";
-    //                 let searchedObj = new Show(showId, showName, showImg);
-    //                 shows.push(searchedObj);
-    //             }
-    //         }
-    //         doneHandler(shows);
-    //     })
-    // }
+    const searchSuggestions = (input, successHandler, errorHandler) => {
+        const request = $.ajax({
+            url: `http://api.tvmaze.com/search/shows?q=${input}`,
+            method: "GET"
+        });
+        request.done((response) => {
+            const suggestedShows = [];
+            if (response.length <= 10) {
+                for (let i = 0; i < response.length; i++) {
+                    const showId = response[i].show.id;
+                    const showName = response[i].show.name;
+                    let showImage = "";
+                    const suggestedSingleShow = new Show(showId, showName, showImage);
+                    suggestedShows.push(suggestedSingleShow);
+                }
+            } else {
+                for (let i = 0; i < response.length; i++) {
+                    const showId = response[i].show.id;
+                    const showName = response[i].show.name;
+                    let showImage = "";
+                    const suggestedSingleShow = new Show(showId, showName, showImage);
+                    suggestedShows.push(suggestedSingleShow);
+                }
 
+            }
+            successHandler(suggestedShows);
+        });
+
+        request.fail((jqXHR, textStatus) => {
+            errorHandler(textStatus)
+        });
+    }
+
+
+    return {
+        fetchShows,
+        fetchSingleShow,
+        searchSuggestions
+
+    }
+})();
