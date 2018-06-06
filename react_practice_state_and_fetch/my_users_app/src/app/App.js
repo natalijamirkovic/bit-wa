@@ -26,14 +26,35 @@ import { UserList } from "./users/UserList"
 // console.log(myUsers) 
 // })
 
-const App = (props) => {
-  return (
-    <React.Fragment>
-      <Header />
-      <UserList />
-      <Footer />
-    </React.Fragment>
-  )
+ class App extends Component {
+      constructor(props) {
+          super(props);
+          
+          this.state = {
+            listView: true
+          }
+        }
+
+        checkListView = (view) =>{
+        if (view === false) {
+          this.setState({listView:true}) 
+
+          } else {
+            this.setState ({
+              listView:false
+            })
+          }
+        }
+        render() {
+
+          return (
+            <React.Fragment>
+              <Header layout= {this.checkListView} state = {this.state.listView} />
+              <UserList state = {this.state.listView} />
+              <Footer />
+            </React.Fragment>
+          )
+        }
 }
 
 export default App;
