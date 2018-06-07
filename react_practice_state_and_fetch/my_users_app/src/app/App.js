@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./partials/Header";
 import Footer from "./partials/Footer";
 import { fetchUsers } from '../services/userService';
-import { UserList } from "./users/UserList"
+import { UserList } from "./users/UserList";
 
 // class App extends Component {
 //   render() {
@@ -26,35 +26,55 @@ import { UserList } from "./users/UserList"
 // console.log(myUsers) 
 // })
 
- class App extends Component {
-      constructor(props) {
-          super(props);
-          
-          this.state = {
-            listView: true
-          }
-        }
+class App extends Component {
+  constructor(props) {
+    super(props);
 
-        checkListView = (view) =>{
-        if (view === false) {
-          this.setState({listView:true}) 
+    this.state = {
+      listView: true,
+      users: []
+    }
+  }
 
-          } else {
-            this.setState ({
-              listView:false
-            })
-          }
-        }
-        render() {
 
-          return (
-            <React.Fragment>
-              <Header layout= {this.checkListView} state = {this.state.listView} />
-              <UserList state = {this.state.listView} />
-              <Footer />
-            </React.Fragment>
-          )
-        }
+  loadData = () => {
+    fetchUsers()
+      .then(users => {
+        this.setState({     //setujemo listu koju smo fetch
+          users: users
+        })
+        //console.log(this.state.users);
+      })
+  }
+
+
+  componentDidMount() {
+    this.loadData()
+  }
+
+
+  checkListView = (view) => {
+    if (view === false) {
+      this.setState({ listView: true })
+
+    } else {
+      this.setState({
+        listView: false
+      })
+    }
+  }
+
+
+  render() {
+
+    return (
+      <React.Fragment>
+        <Header layout={this.checkListView} state={this.state.listView} loadData={this.loadData} />
+        <UserList state={this.state.listView} users={this.state.users} />
+        <Footer />
+      </React.Fragment>
+    )
+  }
 }
 
 export default App;

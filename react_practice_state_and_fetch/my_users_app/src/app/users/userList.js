@@ -1,65 +1,42 @@
-import React, {Component} from "react";
-import {fetchUsers} from "../../services/userService";   
-import {UserItem} from "./UserItem";
-import {UserCard} from "./UserCard";
+import React from "react";
+import { UserItem } from "./UserItem";
+import { UserCard } from "./UserCard";
 
-export class UserList extends Component {
-    constructor() {
-        super() //pozovni njen konstruktor bazne klase sa nekim arg (mi nemamo arg)
-        this.state = {        //setujemo state inicijalno 
-           users: []
-        };
-    }
+export const UserList = (props) => {
+    
+    const { state, users } = props;
 
-    loadData() {
-        fetchUsers()
-        .then(users => {
-            this.setState({     //setujemo listu koju smo fetch
-               users:users
-            })
-            console.log(this.state.users);
-        })
-    }
 
-    componentDidMount() {
-        this.loadData()
-    }
 
-    renderListItem (users)  {
-        
-        return(
-            <div className="row">
-            {users.map((user,index) => {
-            return <UserItem key={index} user={user} />
-            })}
-            </div>
-            )
-    }
+  const  renderListItem = (users) => {
 
-    renderListCard (users) {
         return (
             <div className="row">
-             {users.map((user,index) => {
-            return <UserCard key={index} user={user} />
-             })}
+                {users.map((user, index) => {
+                    return <UserItem key={index} user={user} />
+                })}
             </div>
         )
     }
 
-
-    render() {
-
-        const userList = this.state.users;
-        const {state} =this.props;
-        return(
-            <div className="container">
+   const renderListCard = (users) => {
+        return (
             <div className="row">
-            {state
-                ?this.renderListItem(userList)
-                :this.renderListCard(userList)
-            }
+                {users.map((user, index) => {
+                    return <UserCard key={index} user={user} />
+                })}
+            </div>
+        )
+    }
+
+    return (
+        <div className="container">
+            <div className="row">
+                {state
+                    ? renderListItem(users)
+                    : renderListCard(users)
+                }
             </div>
         </div>
-        )
-    }
+    )
 }

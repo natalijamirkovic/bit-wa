@@ -1,4 +1,4 @@
-class User {
+export class User {
     constructor (name, email, picture, dob){
         this.name = name;
         this.email = email;
@@ -23,5 +23,4 @@ class User {
     }
 }
 
-export {User}
 
