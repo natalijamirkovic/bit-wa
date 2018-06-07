@@ -3,12 +3,12 @@ import { UserItem } from "./UserItem";
 import { UserCard } from "./UserCard";
 
 export const UserList = (props) => {
-    
+
     const { state, users } = props;
 
 
 
-  const  renderListItem = (users) => {
+    const renderListItem = (users) => {
 
         return (
             <div className="row">
@@ -19,7 +19,7 @@ export const UserList = (props) => {
         )
     }
 
-   const renderListCard = (users) => {
+    const renderListCard = (users) => {
         return (
             <div className="row">
                 {users.map((user, index) => {
@@ -28,15 +28,23 @@ export const UserList = (props) => {
             </div>
         )
     }
+    const displayLayout = (users) => {
+        const showStorageView = localStorage.getItem("listView");
+
+
+        return showStorageView === "true"
+            ? renderListItem(users) :
+            renderListCard(users)
+    }
 
     return (
-        <div className="container">
-            <div className="row">
-                {state
-                    ? renderListItem(users)
-                    : renderListCard(users)
-                }
-            </div>
+    <div className="container">
+        <div className="row">
+            {state
+                ? renderListItem(users)
+                : renderListCard(users)
+            }
         </div>
-    )
+    </div>
+)
 }

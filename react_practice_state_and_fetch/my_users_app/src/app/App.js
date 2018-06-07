@@ -56,11 +56,12 @@ class App extends Component {
   checkListView = (view) => {
     if (view === false) {
       this.setState({ listView: true })
-
+      localStorage.setItem("listView", this.state.listView )
     } else {
       this.setState({
         listView: false
       })
+      localStorage.setItem("listView", this.state.listView )
     }
   }
 
