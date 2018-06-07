@@ -9,7 +9,7 @@ const fetchUsers = () => {
         .then((responseJSONObject) => {
             const userData = responseJSONObject.results;
             return userData.map((user) => {
-                return new User(user.name.first, user.email, user.picture.thumbnail, user.dob)
+                return new User(user.name.first, user.email, user.picture.thumbnail, user.dob, user.gender)
         
             })
         })

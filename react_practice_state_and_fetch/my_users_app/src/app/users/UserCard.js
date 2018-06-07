@@ -3,12 +3,17 @@ import React from "react"
 
 
 export const UserCard = (props) => {
-    const {name, picture, dob} = props.user;
+    const {name, picture, dob, gender} = props.user;
+
+   
+    const style = (gender === "female") ? {backgroundColor: "#e5908b"} : {};
+    
+ 
 
    return (
   
     <div className="col s4">
-        <div className="card">
+        <div className="card" style={style}>
             <div className="card-image">
               <img src={picture}></img>
               <span className="card-title">{name}</span>
