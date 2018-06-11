@@ -2,19 +2,14 @@ import React from "react";
 
 export const Footer = () => {
 
-    return (
-        <footer className ="page-footer">
-          <div className ="container">
-            <div className ="row">
-           
-             
-            </div>
-          </div>
-          <div className ="footer-copyright">
-            <div className ="container">
-            © {new Date().getFullYear()}  by Kristina i Natalija
-            </div>
-          </div>
-        </footer>
-    )
+  return (
+    <footer className="page-footer">
+      <div className="footer-copyright">
+        <div className="container">
+          Copyright &#169;  Kristina &amp; Natalija {new Date().getFullYear()}
+        </div>
+      </div>
+    </footer>
+  )
+
 }
