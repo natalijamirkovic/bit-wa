@@ -1,5 +1,4 @@
 import React from "react";
-import { SingleAuthor } from "../singleAuthor/SingleAuthor";
 import { postService } from "../../services/PostService";
 import { Link } from "react-router-dom";
 
@@ -9,23 +8,50 @@ export class SinglePost extends React.Component {
     constructor(props) {
         super(props)
 
-        this.setState = ({
-            post:{}
+        this.state = ({
+            post: {},
+            author: {},
+            morePosts: []
+
         })
     }
 
-    loadPost() {
-        postService.fetchPost(this.props.match.params.id)
-            .then((post) => {
-                return this.setState({
-                    post:post
-                })
-            })
+    componentDidMount() {
+        this.fetchPageData(this.props.match.params.id)
     }
 
-    componentDidMount() {
-        this.loadPost()
+
+    componentWillReceiveProps = (nextProps) => {
+        this.fetchPageData(nextProps.match.params.id);
     }
+
+    fetchPageData(postId) {
+        postService.fetchPost(postId)
+            .then((post) => {
+                this.setState({post});
+                this.fetchAuthorRelatedData(post.userId);
+            })
+            
+
+    }
+
+    fetchAuthorRelatedData = (userId) => {
+        postService.fetchAuthor(userId)
+            .then((author) => this.setState({author}))
+
+        postService.fetchPostsFromAnAuthor(userId)
+            .then((morePosts) => this.setState({morePosts}))
+    }
+
+    // loadAuthor() {
+    //     postService.fetchAuthor(this.props.match.params.id)
+    //         .then((author) => {
+    //             return this.setState({
+    //                 author: author
+    //             })
+    //         })
+    // }
+
 
     render() {
 
@@ -33,29 +59,23 @@ export class SinglePost extends React.Component {
             return null;
         }
 
-        return(
-            <div>
-                <h1>SINGLE POST TITLE </h1>
-                <p> <Link to="authors/:id"> Author Name </Link> </p>
+        return (
+            <div id="single-post-div">
+                <h4>{this.state.post.title} </h4>
+
+                <p id="author-name"> <Link to={"/authors/" + this.state.author.id}> {this.state.author.name} </Link> </p>
                 <p> {this.state.post.body} </p>
                 <div>
                     <div className="divider"></div>
                 </div>
-                <p> more posts from same author</p>
+                <ul> 3 more posts from same author:
+                    <li>{this.state.morePosts.slice(0, 3).map((post, i) => {
+                        return <li><Link to={"/posts/" + this.state.morePosts[i].id} key={i}>{(this.state.morePosts[i].title)}</Link></li>;
+                    })}</li>
+                </ul>
+
             </div>
-        )
+                )
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

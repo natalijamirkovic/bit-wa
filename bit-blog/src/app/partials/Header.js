@@ -15,7 +15,7 @@ export const Header = () => {
             <nav>
                 <div className="nav-wrapper container">
                     <div className="row">
-                        <Link to="/home" className="brand-logo">BIT BLOG</Link>
+                        <div className="brand-logo">BIT BLOG</div>
                         <ul id="nav-mobile" className="right hide-on-med-and-down">
                             <li><Link to="/home">Home</Link></li>
                             <li><Link to="/authors">Authors</Link></li>

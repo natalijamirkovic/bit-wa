@@ -1,2 +1,3 @@
-export const endPoint = "https://jsonplaceholder.typicode.com/";
+export const endPoint = "http://localhost:3000/";
+// export const endPoint = "https://jsonplaceholder.typicode.com/";
 

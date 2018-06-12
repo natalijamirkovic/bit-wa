@@ -1,7 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom";
 import { postService } from "../../services/PostService";
-import { Authors } from "../authors/Authors";
 
 
 
@@ -17,7 +16,6 @@ export class SingleAuthor extends React.Component {
     loadAuthor() {
         postService.fetchAuthor(this.props.match.params.id)
             .then((author) => {
-                console.log(author);
                 return this.setState({
                     author: author
                 })

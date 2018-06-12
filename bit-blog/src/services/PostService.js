@@ -35,8 +35,8 @@ class PostService {
 
     fetchNumberOfPosts(authorId) {
 
-        let counter = 0;
-        for (let i = 0; i < this.data.posts.length; i++) {
+        let counter = 0;                                        //dohvatamo broj postova od jednog autora, zbog toga mu u arg proslijedimo autorov id
+        for (let i = 0; i < this.data.posts.length; i++) {      //user id 
             if (authorId === this.data.posts[i].userId) {
                 counter++;
             }
@@ -44,10 +44,8 @@ class PostService {
         return counter;
     }
 
-
-
     fetchAuthors() {
-        return fetch(endPoint + "users")
+        return fetch(endPoint + "authors")
             .then((response) => {
                 return response.json()
             })
@@ -57,35 +55,39 @@ class PostService {
             });
     }
 
-    fetchPostsFromAnAuthor(postId, numberOfPosts, authorId) {
+    fetchPostsFromAnAuthor(authorId) {
         return fetch(endPoint + "posts?userId=" + authorId)
             .then((response) => {
                 return response.json()
-            })
-            .then((postsArray) => {
-                const posts = [];
-                for (let i = 0; posts.length < numberOfPosts && i < postsArray.length; i++) {
-                    if (postsArray[i].id !== postId) {
-                        posts.push(postsArray[i]);
-                    }
-                }
-                return posts;
             });
     }
 
-
     fetchAuthor(authorId) { //stavi kao parametar id, u singleAuthor proslijedi argumente preko this.props.match.
-        return fetch(endPoint + "users/" + authorId)
+        return fetch(endPoint + "authors/" + authorId)
             .then((response) => {
                 return response.json()
-            })
-            .then((author) => {
-                return author;
             })
 
     }
 
 
+    addNewPost(title, body, userId) {
+        return fetch('http://localhost:3000/posts', {
+            method: 'POST',
+            body: JSON.stringify({
+                title: title,
+                body: body,
+                userId: userId
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => response.json())
+            .then(post => {
+                console.log(post);
+            })
+    }
 
 }
 export const postService = new PostService();

@@ -10,7 +10,7 @@ export const Author = (props) => {
 
 return (
     <div className="post">
-        <h2><Link to={"/authors/"+ props.author.id}> {(props.author.name)} {postService.fetchNumberOfPosts(props.author.id)} posts</Link></h2>
+        <h4><Link to={"/authors/"+ props.author.id}> {(props.author.name)} {postService.fetchNumberOfPosts(props.author.id)} posts</Link></h4>
     </div>
 );
 }
