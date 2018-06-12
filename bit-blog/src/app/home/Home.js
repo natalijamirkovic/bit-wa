@@ -35,7 +35,7 @@ export class Home extends React.Component {
             <div >
                 <h1 id="posts-home">POSTS</h1>
                 {this.state.posts.map((post, i) => {
-                    return <Post post={post} key={i} />;
+                    return <Post post={post} key={i} />; //Post je komponenta koju smo importovali iz Post.js
                 })}
             </div>
         )
